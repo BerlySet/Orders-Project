@@ -18,7 +18,6 @@ import javax.validation.constraints.Past;
 
 import com.barleyyy.orders.utils.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

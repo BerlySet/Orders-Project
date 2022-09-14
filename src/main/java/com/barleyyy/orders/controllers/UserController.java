@@ -2,7 +2,6 @@ package com.barleyyy.orders.controllers;
 
 import com.barleyyy.orders.dto.ResponseData;
 import com.barleyyy.orders.services.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ public class UserController {
     ResponseData<List<User>> responseData = new ResponseData<>();
     responseData.setPayload(userService.getALlUsers());
     responseData.setStatus(true);
-    responseData.getMessages().add("Get Data Success!");
+    responseData.getMessages().add("Get All Users Success!");
     return ResponseEntity.ok(responseData);
   }
 
