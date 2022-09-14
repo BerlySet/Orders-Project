@@ -3,14 +3,13 @@ package com.barleyyy.orders.controllers;
 import com.barleyyy.orders.dto.ResponseData;
 import com.barleyyy.orders.entities.Order;
 import com.barleyyy.orders.services.OrderService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -45,5 +44,14 @@ public class OrderController {
             responseData.getMessages().add("Order Not Found!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<ResponseData<Order>> addOrder(@Valid @RequestBody Order order) {
+        ResponseData<Order> responseData = new ResponseData<>();
+        responseData.setPayload(orderService.addOrder(order));
+        responseData.setStatus(true);
+        responseData.getMessages().add("Add Order Success!");
+        return ResponseEntity.ok(responseData);
     }
 }

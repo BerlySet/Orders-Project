@@ -22,4 +22,8 @@ public class OrderService {
     public Optional<Order> getSpecifiedOrder(int id) {
         return orderRepository.findById(id);
     }
+
+    public Order addOrder(Order order) {
+        return orderRepository.save(order);
+    }
 }
