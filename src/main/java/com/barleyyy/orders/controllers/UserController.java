@@ -1,41 +1,38 @@
 package com.barleyyy.orders.controllers;
 
-import java.util.List;
-
-import com.barleyyy.orders.utils.Gender;
+import com.barleyyy.orders.dto.ResponseData;
+import com.barleyyy.orders.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.barleyyy.orders.entities.User;
-import com.barleyyy.orders.repository.UserRepository;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
   @Autowired
-  UserRepository userRepository;
+  private UserService userService;
 
   @GetMapping("/users")
-  public List<User> index() {
-    return userRepository.findAll();
+  public ResponseEntity<ResponseData<List<User>>> index() {
+    ResponseData<List<User>> responseData = new ResponseData<>();
+    responseData.setPayload(userService.getALlUsers());
+    responseData.setStatus(true);
+    responseData.getMessages().add("Get Data Success!");
+    return ResponseEntity.ok(responseData);
   }
 
-  @PostMapping("/users")
-  public User addUser(@RequestBody User param) {
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    String hashPassword = bCryptPasswordEncoder.encode(param.getPassword());
-
-    User user = new User();
-    user.setFullName(param.getFullName());
-    user.setEmail(param.getEmail());
-    user.setGender(Gender.valueOf(param.getGender()));
-    user.setPassword(hashPassword);
-    user.setDateOfBirth(param.getDateOfBirth());
-    user.setCreatedAt(param.getCreatedAt());
-    user.setUpdatedAt(param.getUpdatedAt());
-    return this.userRepository.save(user);
+  @PostMapping("/register")
+  public ResponseEntity<ResponseData<User>> register(@Valid @RequestBody User user){
+    ResponseData<User> responseData = new ResponseData<>();
+    responseData.setPayload(userService.registerUser(user));
+    responseData.setStatus(true);
+    responseData.getMessages().add("Register Success!");
+    return ResponseEntity.ok(responseData);
   }
 }

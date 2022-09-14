@@ -1,6 +1,8 @@
 package com.barleyyy.orders.entities;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,29 +13,47 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
 
 import com.barleyyy.orders.utils.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
+  @NotEmpty(message = "Full Name is Required")
+  @Column(nullable = false)
   private String fullName;
+
+  @Past(message = "Date of Birth must be less than today")
+  @Column(nullable = false)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date dateOfBirth;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "gender")
+  @Column(nullable = false)
   private Gender gender;
 
+  @NotEmpty(message = "Email is Required")
+  @Column(nullable = false, unique = true)
   private String email;
+
+  @NotEmpty(message = "Password is Required")
+  @Column(nullable = false)
   private String password;
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdAt;
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updatedAt;
 
@@ -48,6 +68,8 @@ public class User {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
+
+  public int getId() { return id; }
 
   public String getFullName() {
     return fullName;
@@ -77,8 +99,39 @@ public class User {
     this.email = email;
   }
 
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
+    return Collections.singletonList(authority);
+  }
+
   public String getPassword() {
     return password;
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 
   public void setPassword(String password) {
