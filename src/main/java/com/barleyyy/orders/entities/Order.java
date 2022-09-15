@@ -18,7 +18,7 @@ public class Order {
     @Column(nullable = false)
     private String name;
 
-    @Min(value = 1, message = "Count mus be equal or greater than 1")
+    @Min(value = 1, message = "Count must be equal or greater than 1")
     private int count;
 
     @NotEmpty(message = "Address is Required")

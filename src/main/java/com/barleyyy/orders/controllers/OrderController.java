@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Array;
 import java.util.Optional;
 
 @RestController
@@ -49,9 +50,23 @@ public class OrderController {
     @PostMapping("/orders")
     public ResponseEntity<ResponseData<Order>> addOrder(@Valid @RequestBody Order order) {
         ResponseData<Order> responseData = new ResponseData<>();
-        responseData.setPayload(orderService.addOrder(order));
+        responseData.setPayload(orderService.store(order));
         responseData.setStatus(true);
         responseData.getMessages().add("Add Order Success!");
         return ResponseEntity.ok(responseData);
+    }
+
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<ResponseData<Order>> deleteOrder(@PathVariable("id") int id) {
+        ResponseData<Order> responseData = new ResponseData<>();
+        if (orderService.delete(id)) {
+            responseData.setStatus(true);
+            responseData.getMessages().add("Delete Order Success!");
+            return ResponseEntity.ok(responseData);
+        } else {
+            responseData.setStatus(false);
+            responseData.getMessages().add("Delete Order Fail! ID Not Found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
+        }
     }
 }

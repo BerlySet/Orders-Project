@@ -23,7 +23,16 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    public Order addOrder(Order order) {
+    public Order store(Order order) {
         return orderRepository.save(order);
+    }
+
+    public boolean delete(int id) {
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
