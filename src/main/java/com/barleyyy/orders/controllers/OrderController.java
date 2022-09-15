@@ -69,4 +69,13 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
     }
+
+    @PutMapping("/orders")
+    public ResponseEntity<ResponseData<Order>> update(@Valid @RequestBody Order order) {
+        ResponseData<Order> responseData = new ResponseData<>();
+        responseData.setPayload(orderService.store(order));
+        responseData.setStatus(true);
+        responseData.getMessages().add("Update Order Success!");
+        return ResponseEntity.ok(responseData);
+    }
 }
