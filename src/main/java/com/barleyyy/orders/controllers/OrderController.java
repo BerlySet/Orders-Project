@@ -1,6 +1,7 @@
 package com.barleyyy.orders.controllers;
 
 import com.barleyyy.orders.dto.ResponseData;
+import com.barleyyy.orders.dto.SearchData;
 import com.barleyyy.orders.entities.Order;
 import com.barleyyy.orders.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -74,6 +76,15 @@ public class OrderController {
         responseData.setPayload(orderService.store(order));
         responseData.setStatus(true);
         responseData.getMessages().add("Update Order Success!");
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping("/orders/search")
+    public ResponseEntity<ResponseData<List<Order>>> getOrderByName(@RequestBody SearchData searchData) {
+        ResponseData<List<Order>> responseData = new ResponseData<>();
+        responseData.setPayload(orderService.findByName(searchData.getSearchKey()));
+        responseData.setStatus(true);
+        responseData.getMessages().add("Search Order Success!");
         return ResponseEntity.ok(responseData);
     }
 }
