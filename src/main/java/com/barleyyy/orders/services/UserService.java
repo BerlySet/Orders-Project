@@ -1,8 +1,11 @@
 package com.barleyyy.orders.services;
 
+import com.barleyyy.orders.dto.UpdateProfileUserData;
 import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,5 +48,18 @@ public class UserService implements UserDetailsService {
 
     public List<User> getALlUsers() {
         return userRepository.findAll();
+    }
+
+    public User getUserLoggedIn() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+    public User updateProfile(UpdateProfileUserData newUserData) {
+        User userLoggedIn = getUserLoggedIn();
+        userLoggedIn.setFullName(newUserData.getFullName());
+        userLoggedIn.setDateOfBirth(newUserData.getDateOfBirth());
+        userLoggedIn.setGender(newUserData.getGender());
+        return userRepository.save(userLoggedIn);
     }
 }
