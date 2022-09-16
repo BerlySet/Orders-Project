@@ -1,6 +1,7 @@
 package com.barleyyy.orders.services;
 
 import com.barleyyy.orders.entities.Order;
+import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private UserService userService;
 
     public Iterable<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -25,6 +28,8 @@ public class OrderService {
     }
 
     public Order store(Order order) {
+        User userLoggedIn = userService.getUserLoggedIn();
+        order.setUser(userLoggedIn);
         return orderRepository.save(order);
     }
 

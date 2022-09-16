@@ -29,11 +29,23 @@ public class Order {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Order() {}
 
