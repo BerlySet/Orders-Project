@@ -2,14 +2,13 @@ package com.barleyyy.orders.controllers;
 
 import com.barleyyy.orders.dto.ResponseData;
 import com.barleyyy.orders.dto.UpdateProfileUserData;
-import com.barleyyy.orders.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
 import com.barleyyy.orders.entities.User;
+import com.barleyyy.orders.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class UserController {
+  private static final Logger log = LogManager.getLogger(UserController.class);
   @Autowired
   private UserService userService;
 
@@ -26,6 +26,8 @@ public class UserController {
     responseData.setPayload(userService.getALlUsers());
     responseData.setStatus(true);
     responseData.getMessages().add("Get All Users Success!");
+    log.info("Return response body (Get All Users)");
+    log.info(responseData.toString());
     return ResponseEntity.ok(responseData);
   }
 
@@ -35,6 +37,8 @@ public class UserController {
     responseData.setPayload(userService.registerUser(user));
     responseData.setStatus(true);
     responseData.getMessages().add("Register Success!");
+    log.info("Return response body (New User Successfully Register)");
+    log.info(responseData.toString());
     return ResponseEntity.ok(responseData);
   }
 
@@ -44,6 +48,8 @@ public class UserController {
     responseData.setPayload(userService.getUserLoggedIn());
     responseData.setStatus(true);
     responseData.getMessages().add("Here's your login details");
+    log.info("Return response body (Get User Logged In Details)");
+    log.info(responseData.toString());
     return ResponseEntity.ok(responseData);
   }
 
@@ -53,6 +59,8 @@ public class UserController {
     responseData.setPayload(userService.updateProfile(userData));
     responseData.setStatus(true);
     responseData.getMessages().add("Update Profile Success!");
+    log.info("Return response body (Update Profile User Success)");
+    log.info(responseData.toString());
     return ResponseEntity.ok(responseData);
   }
 }

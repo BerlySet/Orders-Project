@@ -31,4 +31,13 @@ public class ResponseData<T> {
     public void setPayload(T payload) {
         this.payload = payload;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseData{" +
+                "status=" + status +
+                ", messages=" + messages +
+                ", payload=" + payload +
+                '}';
+    }
 }

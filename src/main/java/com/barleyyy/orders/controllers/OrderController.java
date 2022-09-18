@@ -4,6 +4,8 @@ import com.barleyyy.orders.dto.ResponseData;
 import com.barleyyy.orders.dto.SearchData;
 import com.barleyyy.orders.entities.Order;
 import com.barleyyy.orders.services.OrderService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class OrderController {
-
+    private static final Logger log = LogManager.getLogger(OrderController.class);
     @Autowired
     private OrderService orderService;
 
@@ -26,6 +28,8 @@ public class OrderController {
         responseData.setPayload(orderService.getAllOrders());
         responseData.setStatus(true);
         responseData.getMessages().add("Get All Orders Success!");
+        log.info("Return response body (Get All Orders)");
+        log.info(responseData.toString());
         return ResponseEntity.ok(responseData);
     }
 
@@ -38,11 +42,15 @@ public class OrderController {
             responseData.setPayload(payload);
             responseData.setStatus(true);
             responseData.getMessages().add("Get Order Success!");
+            log.info("Return response body (Get Specified Order)");
+            log.info(responseData.toString());
             return ResponseEntity.ok(responseData);
         } else {
             responseData.setPayload(payload);
             responseData.setStatus(false);
             responseData.getMessages().add("Order Not Found!");
+            log.warn("Fail return response body (Get Specified Order)");
+            log.info(responseData.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
     }
@@ -53,6 +61,8 @@ public class OrderController {
         responseData.setPayload(orderService.store(order));
         responseData.setStatus(true);
         responseData.getMessages().add("Add Order Success!");
+        log.info("Return response body (Add New Order)");
+        log.info(responseData.toString());
         return ResponseEntity.ok(responseData);
     }
 
@@ -62,10 +72,14 @@ public class OrderController {
         if (orderService.delete(id)) {
             responseData.setStatus(true);
             responseData.getMessages().add("Delete Order Success!");
+            log.info("Return response body (Delete Specified Order)");
+            log.info(responseData.toString());
             return ResponseEntity.ok(responseData);
         } else {
             responseData.setStatus(false);
             responseData.getMessages().add("Delete Order Fail! ID Not Found");
+            log.warn("Fail return response body (Delete Specified Order)");
+            log.info(responseData.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
     }
@@ -76,6 +90,8 @@ public class OrderController {
         responseData.setPayload(orderService.store(order));
         responseData.setStatus(true);
         responseData.getMessages().add("Update Order Success!");
+        log.info("Return response body (Update Specified Order)");
+        log.info(responseData.toString());
         return ResponseEntity.ok(responseData);
     }
 
@@ -85,6 +101,8 @@ public class OrderController {
         responseData.setPayload(orderService.findByName(searchData.getSearchKey()));
         responseData.setStatus(true);
         responseData.getMessages().add("Search Order Success!");
+        log.info("Return response body (Search Orders)");
+        log.info(responseData.toString());
         return ResponseEntity.ok(responseData);
     }
 }
