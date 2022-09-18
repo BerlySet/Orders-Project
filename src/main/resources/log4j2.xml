@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" monitorInterval="30">
+<Configuration>
     <Properties>
         <Property name="LOG_PATTERN">
             %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
         </Property>
     </Properties>
     <Appenders>
+        <RollingFile name="RollingFile" filename="logs/app.log" filePattern="$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+        </RollingFile>
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.barleyyy.orders" level="debug" additivity="false">
+        <Logger name="com.barleyyy.orders" level="trace">
             <AppenderRef ref="ConsoleAppender" />
         </Logger>
-        <Root level="info">
-            <AppenderRef ref="ConsoleAppender" />
+        <Root level="error">
+            <AppenderRef ref="RollingFile" />
         </Root>
     </Loggers>
 </Configuration>
