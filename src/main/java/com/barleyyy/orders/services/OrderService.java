@@ -41,8 +41,9 @@ public class OrderService {
     }
 
     public boolean delete(int id) {
-        log.info("Check if order existsById(), if exists then delete it");
+        log.info("Check if order existsById(), if exist return true");
         if (orderRepository.existsById(id)) {
+            log.info("Order exist, delete it now!");
             orderRepository.deleteById(id);
             return true;
         } else {

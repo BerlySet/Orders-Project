@@ -37,7 +37,7 @@ public class OrderController {
     public ResponseEntity<ResponseData<Optional<Order>>> findById(@PathVariable("id") int id) {
         ResponseData<Optional<Order>> responseData = new ResponseData<>();
         Optional<Order> payload = orderService.getSpecifiedOrder(id);
-
+        log.info(payload);
         if (payload.isPresent()) {
             responseData.setPayload(payload);
             responseData.setStatus(true);
