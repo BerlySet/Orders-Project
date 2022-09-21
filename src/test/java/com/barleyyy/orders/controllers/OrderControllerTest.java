@@ -4,6 +4,7 @@ import com.barleyyy.orders.dto.ResponseData;
 import com.barleyyy.orders.dto.SearchData;
 import com.barleyyy.orders.entities.Order;
 import com.barleyyy.orders.services.OrderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,22 @@ class OrderControllerTest {
     @Autowired
     private OrderController orderController;
 
+    private final int validId = 1;
+    private final int invalidId = 9999;
+    private Order order;
+    private List<Order> orders = new ArrayList<>();
+    private List<String> messages = new ArrayList<>();
+
+    @BeforeEach
+    private void setUp() {
+        LocalDateTime timestamp = LocalDateTime.now();
+        order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", timestamp, timestamp);
+        orders.add(order);
+        orders.add(new Order(2, "Personal Computer", 10, "Jl. Veteran", "089507153745", timestamp, timestamp));
+    }
+
     @Test
     void getAllOrdersSuccess() {
-        List<Order> orders = new ArrayList<>();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        orders.add(new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        orders.add(new Order(2, "Personal Computer", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        List<String> messages = new ArrayList<>();
         messages.add("Get All Orders Success!");
 
         Mockito.when(orderService.getAllOrders()).thenReturn(orders);
@@ -56,11 +65,9 @@ class OrderControllerTest {
 
     @Test
     void getAllOrdersButNoOrderSaved() {
-        List<Order> orders = new ArrayList<>();
-        List<String> messages = new ArrayList<>();
         messages.add("Get All Orders Success!");
 
-        Mockito.when(orderService.getAllOrders()).thenReturn(orders);
+        Mockito.when(orderService.getAllOrders()).thenReturn(new ArrayList<>());
         ResponseEntity<ResponseData<Iterable<Order>>> result = orderController.index();
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -75,12 +82,7 @@ class OrderControllerTest {
 
     @Test
     void findByIdSuccess() {
-        int validId = 1;
-        List<String> messages = new ArrayList<>();
         messages.add("Get Order Success!");
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        Order order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt);
 
         Mockito.when(orderService.getSpecifiedOrder(validId)).thenReturn(Optional.of(order));
         ResponseEntity<ResponseData<Optional<Order>>> result = orderController.findById(validId);
@@ -97,8 +99,6 @@ class OrderControllerTest {
 
     @Test
     void findByIdFailed() {
-        int invalidId = 1;
-        List<String> messages = new ArrayList<>();
         messages.add("Order Not Found!");
 
         Mockito.when(orderService.getSpecifiedOrder(invalidId)).thenReturn(Optional.empty());
@@ -116,11 +116,7 @@ class OrderControllerTest {
 
     @Test
     void addOrder() {
-        List<String> messages = new ArrayList<>();
         messages.add("Add Order Success!");
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        Order order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt);
 
         Mockito.when(orderService.store(order)).thenReturn(order);
         ResponseEntity<ResponseData<Order>> result = orderController.addOrder(order);
@@ -137,8 +133,6 @@ class OrderControllerTest {
 
     @Test
     void deleteOrderExist() {
-        int validId = 1;
-        List<String> messages = new ArrayList<>();
         messages.add("Delete Order Success!");
 
         Mockito.when(orderService.delete(validId)).thenReturn(true);
@@ -156,8 +150,6 @@ class OrderControllerTest {
 
     @Test
     void deleteOrderNotExist() {
-        int invalidId = 9999;
-        List<String> messages = new ArrayList<>();
         messages.add("Delete Order Fail! ID Not Found");
 
         Mockito.when(orderService.delete(invalidId)).thenReturn(false);
@@ -173,11 +165,7 @@ class OrderControllerTest {
 
     @Test
     void update() {
-        List<String> messages = new ArrayList<>();
         messages.add("Add Order Success!");
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        Order order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt);
 
         Mockito.when(orderService.store(order)).thenReturn(order);
         ResponseEntity<ResponseData<Order>> result = orderController.addOrder(order);
@@ -194,12 +182,6 @@ class OrderControllerTest {
 
     @Test
     void getOrderByName() {
-        List<Order> orders = new ArrayList<>();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        orders.add(new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        orders.add(new Order(2, "Personal Computer", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        List<String> messages = new ArrayList<>();
         messages.add("Search Order Success!");
 
         Mockito.when(searchData.getSearchKey()).thenReturn("Key");

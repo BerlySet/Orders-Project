@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
         boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
         if(userExists) {
             throw new RuntimeException(
-                    String.format("user with email '%s' already exists", user.getEmail())
+                    String.format("User with email '%s' already exists", user.getEmail())
             );
         }
         log.info("Call bCryptPasswordEncoder.encode(password) to encode password");

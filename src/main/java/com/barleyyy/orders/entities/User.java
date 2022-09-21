@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
@@ -44,6 +45,7 @@ public class User implements UserDetails {
 
   @NotEmpty(message = "Email is Required")
   @Column(nullable = false, unique = true)
+  @Email
   private String email;
 
   @NotEmpty(message = "Password is Required")

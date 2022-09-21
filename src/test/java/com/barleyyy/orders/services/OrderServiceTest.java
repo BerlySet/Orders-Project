@@ -1,7 +1,10 @@
 package com.barleyyy.orders.services;
 
 import com.barleyyy.orders.entities.Order;
+import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.OrderRepository;
+import com.barleyyy.orders.utils.Gender;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,17 +24,29 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderServiceTest {
     @MockBean
     private OrderRepository orderRepository;
+    @MockBean
+    private UserService userService;
     @Autowired
     private OrderService orderService;
 
+    private List<Order> orders = new ArrayList<>();
+    private Order order;
+    private User user;
+
+    @BeforeEach
+    private void setUp() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.OCTOBER, 22);
+        Date dateOfBirth = calendar.getTime();
+        LocalDateTime timestamp = LocalDateTime.now();
+        order = new Order(1, "Laptop HP Probook", 10, "Jl. Veteran", "089507153745", timestamp, timestamp);
+        orders.add(order);
+        orders.add(new Order(2, "Laptop Asus Vivobook", 10, "Jl. Veteran", "089507153745", timestamp, timestamp));
+        user = new User("Valid User", dateOfBirth, Gender.LAKI_LAKI, "validuser@gmail.com", "password", timestamp, timestamp);
+    }
+
     @Test
     void getAllOrders() {
-        List<Order> orders = new ArrayList<>();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        orders.add(new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        orders.add(new Order(2, "Personal Computer", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-
         Mockito.when(orderRepository.findAll()).thenReturn(orders);
         assertEquals(orders, orderService.getAllOrders());
 
@@ -42,10 +55,6 @@ class OrderServiceTest {
 
     @Test
     void getSpecifiedOrder() {
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        Order order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt);
-
         Mockito.when(orderRepository.findById(1)).thenReturn(Optional.of(order));
         assertEquals(Optional.of(order), orderService.getSpecifiedOrder(1));
 
@@ -53,13 +62,9 @@ class OrderServiceTest {
     }
 
     @Test
-    @Disabled
     void store() {
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        Order order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt);
-
         Mockito.when(orderRepository.save(order)).thenReturn(order);
+        Mockito.when(userService.getUserLoggedIn()).thenReturn(user);
         assertEquals(order, orderService.store(order));
 
         Mockito.verify(orderRepository, Mockito.times(1)).save(order);
@@ -89,12 +94,6 @@ class OrderServiceTest {
 
     @Test
     void findByName() {
-        List<Order> orders = new ArrayList<>();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime updatedAt = LocalDateTime.now();
-        orders.add(new Order(1, "Laptop HP", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-        orders.add(new Order(2, "Laptop Asus", 10, "Jl. Veteran", "089507153745", createdAt, updatedAt));
-
         Mockito.when(orderRepository.findOrderByName("Laptop")).thenReturn(orders);
         assertEquals(orders, orderRepository.findOrderByName("Laptop"));
 

@@ -7,6 +7,7 @@ import com.barleyyy.orders.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +35,20 @@ public class UserController {
   @PostMapping("/register")
   public ResponseEntity<ResponseData<User>> register(@Valid @RequestBody User user){
     ResponseData<User> responseData = new ResponseData<>();
-    responseData.setPayload(userService.registerUser(user));
-    responseData.setStatus(true);
-    responseData.getMessages().add("Register Success!");
-    log.info("Return response body (New User Successfully Register)");
-    log.info(responseData.toString());
-    return ResponseEntity.ok(responseData);
+    try {
+      User payload = userService.registerUser(user);
+      responseData.setPayload(payload);
+      responseData.setStatus(true);
+      responseData.getMessages().add("Register Success!");
+      log.info("Return response body (New User Successfully Register)");
+      log.info(responseData.toString());
+      return ResponseEntity.ok(responseData);
+    } catch (RuntimeException exception) {
+      responseData.setStatus(false);
+      responseData.getMessages().add(exception.getMessage());
+      log.error("Register failed because email" + user.getEmail() + " already taken");
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(responseData);
+    }
   }
 
   @GetMapping("/detail")
