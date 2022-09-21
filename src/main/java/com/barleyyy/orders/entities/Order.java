@@ -80,7 +80,7 @@ public class Order {
     }
 
     public void setCount(int count) {
-        this.count = count;
+        this.count = (count >= 1) ? count : this.count;
     }
 
     public String getAddress() {
