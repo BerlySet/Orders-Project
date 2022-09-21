@@ -5,21 +5,17 @@ import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.UserRepository;
 import com.barleyyy.orders.utils.Gender;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
-    @MockBean
-    private Authentication authentication;
 
     @Autowired
     private UserService userService;
@@ -43,7 +37,7 @@ class UserServiceTest {
     private List<User> users = new ArrayList<>();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.OCTOBER, 22);
         dateOfBirth = calendar.getTime();

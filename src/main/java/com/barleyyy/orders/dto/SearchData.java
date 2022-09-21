@@ -1,6 +1,9 @@
 package com.barleyyy.orders.dto;
 
 public class SearchData {
+    public SearchData(String searchKey) {
+        this.searchKey = searchKey;
+    }
 
     private String searchKey;
 

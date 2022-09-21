@@ -39,7 +39,7 @@ class OrderControllerTest {
     private List<String> messages = new ArrayList<>();
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         LocalDateTime timestamp = LocalDateTime.now();
         order = new Order(1, "Laptop", 10, "Jl. Veteran", "089507153745", timestamp, timestamp);
         orders.add(order);

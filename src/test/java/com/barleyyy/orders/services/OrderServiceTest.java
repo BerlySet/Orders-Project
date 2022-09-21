@@ -5,7 +5,6 @@ import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.OrderRepository;
 import com.barleyyy.orders.utils.Gender;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -34,7 +33,7 @@ class OrderServiceTest {
     private User user;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.OCTOBER, 22);
         Date dateOfBirth = calendar.getTime();

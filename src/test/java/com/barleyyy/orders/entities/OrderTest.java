@@ -19,12 +19,12 @@ class OrderTest {
     private User user;
     private User anotherUser;
     private Date dateOfBirth;
-    LocalDateTime timestamp;
-    LocalDateTime newTimestamp;
-    String orderToString;
+    private LocalDateTime timestamp;
+    private LocalDateTime newTimestamp;
+    private String orderString;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.OCTOBER, 22);
         dateOfBirth = calendar.getTime();
@@ -34,7 +34,7 @@ class OrderTest {
         user = new User("Valid User", dateOfBirth, Gender.LAKI_LAKI, "validuser@gmail.com", "password", timestamp, timestamp);
         order.setUser(user);
         anotherUser = new User("Another Valid User", dateOfBirth, Gender.PEREMPUAN, "validuser2@gmail.com", "password", timestamp, timestamp);
-        orderToString = "Order{id=1, name='Laptop', count=10, address='Jl. Veteran', phoneNumber='089507153745', createdAt="+ timestamp + ", updatedAt=" + timestamp + "}";
+        orderString = "Order{id=1, name='Laptop', count=10, address='Jl. Veteran', phoneNumber='089507153745', createdAt="+ timestamp + ", updatedAt=" + timestamp + "}";
     }
 
     @Test
@@ -133,6 +133,6 @@ class OrderTest {
 
     @Test
     void testToString() {
-        assertEquals(orderToString, order.toString());
+        assertEquals(orderString, order.toString());
     }
 }
