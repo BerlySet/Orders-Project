@@ -94,9 +94,9 @@ class OrderServiceTest {
 
     @Test
     void findByName() {
-        Mockito.when(orderRepository.findOrderByName("Laptop")).thenReturn(orders);
-        assertEquals(orders, orderRepository.findOrderByName("Laptop"));
+        Mockito.when(orderRepository.findOrderByName("%Laptop%")).thenReturn(orders);
+        assertEquals(orders, orderService.findByName("Laptop"));
 
-        Mockito.verify(orderRepository, Mockito.times(1)).findOrderByName("Laptop");
+        Mockito.verify(orderRepository, Mockito.times(1)).findOrderByName("%Laptop%");
     }
 }

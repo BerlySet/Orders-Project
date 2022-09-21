@@ -31,9 +31,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.info("Call findByEmail(email) to check email already exists or not");
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("user with email '%s' not found", email)
-        ));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("user with email '%s' not found", email)));
     }
 
     public User registerUser(User user) {

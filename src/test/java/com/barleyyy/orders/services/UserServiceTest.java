@@ -1,5 +1,6 @@
 package com.barleyyy.orders.services;
 
+import com.barleyyy.orders.dto.UpdateProfileUserData;
 import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.repository.UserRepository;
 import com.barleyyy.orders.utils.Gender;
@@ -7,12 +8,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -28,6 +33,7 @@ class UserServiceTest {
     private UserRepository userRepository;
     @MockBean
     private Authentication authentication;
+
     @Autowired
     private UserService userService;
     private LocalDateTime timestamp;
@@ -59,9 +65,10 @@ class UserServiceTest {
 
     @Test
     void loadUserByUsernameInvalidTest() {
-        Mockito.when(userRepository.findByEmail("invaliduser@gmail.com")).thenThrow(UsernameNotFoundException.class);
+        Mockito.when(userRepository.findByEmail("invaliduser@gmail.com")).thenThrow(new UsernameNotFoundException("user with email invaliduser@gmail.com not found"));
 
-        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("invaliduser@gmail.com"));
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("invaliduser@gmail.com"));
+        assertEquals("user with email invaliduser@gmail.com not found", exception.getMessage());
         Mockito.verify(userRepository, Mockito.times(1)).findByEmail("invaliduser@gmail.com");
     }
 
@@ -99,17 +106,34 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
-    @WithMockUser(username = "validuser@gmail.com")
     void getUserLoggedIn() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getPrincipal()).thenReturn(validUser);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         assertEquals(validUser, userService.getUserLoggedIn());
 
-        Mockito.when(authentication.getPrincipal()).thenReturn(validUser);
         Mockito.verify(authentication, Mockito.times(1)).getPrincipal();
     }
 
     @Test
     void updateProfile() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getPrincipal()).thenReturn(validUser);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
 
+        UpdateProfileUserData userData = new UpdateProfileUserData("Updated Valid User", dateOfBirth, Gender.LAKI_LAKI);
+        User updatedUser = validUser;
+        updatedUser.setFullName(userData.getFullName());
+        updatedUser.setDateOfBirth(userData.getDateOfBirth());
+        updatedUser.setGender(userData.getGender());
+
+        Mockito.when(userRepository.save(updatedUser)).thenReturn(updatedUser);
+        assertEquals(updatedUser, userService.updateProfile(userData));
+        Mockito.verify(authentication, Mockito.times(1)).getPrincipal();
     }
 }
