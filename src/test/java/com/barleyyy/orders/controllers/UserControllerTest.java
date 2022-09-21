@@ -1,6 +1,7 @@
 package com.barleyyy.orders.controllers;
 
 import com.barleyyy.orders.dto.ResponseData;
+import com.barleyyy.orders.dto.UpdateProfileUserData;
 import com.barleyyy.orders.entities.User;
 import com.barleyyy.orders.services.UserService;
 import com.barleyyy.orders.utils.Gender;
@@ -26,15 +27,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-
     @MockBean
     private UserService userService;
-
     @Autowired
     private UserController userController;
 
     private User validUser;
     private User invalidUser;
+    private Date dateOfBirth;
     private final List<User> users = new ArrayList<>();
     private List<String> messages = new ArrayList<>();
 
@@ -42,7 +42,7 @@ class UserControllerTest {
     public void setUp() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.OCTOBER, 22);
-        Date dateOfBirth = calendar.getTime();
+        dateOfBirth = calendar.getTime();
         LocalDateTime timestamp = LocalDateTime.now();
         validUser = new User("Valid User", dateOfBirth, Gender.LAKI_LAKI, "validuser@gmail.com", "password", timestamp, timestamp);
         invalidUser = new User("Invalid User", dateOfBirth, Gender.PEREMPUAN, "invaliduser@gmail.com", "password", timestamp, timestamp);
@@ -103,9 +103,41 @@ class UserControllerTest {
 
     @Test
     void getUserLoggedIn() {
+        messages.add("Here's your login details");
+
+        Mockito.when(userService.getUserLoggedIn()).thenReturn(validUser);
+        ResponseEntity<ResponseData<User>> result = userController.getUserLoggedIn();
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertNotNull(result.getBody().getMessages());
+        assertEquals(messages, result.getBody().getMessages());
+        assertTrue(result.getBody().isStatus());
+        assertNotNull(result.getBody().getPayload());
+
+        Mockito.verify(userService, Mockito.times(1)).getUserLoggedIn();
     }
 
     @Test
     void updateProfile() {
+        messages.add("Update Profile Success!");
+
+        UpdateProfileUserData userData = new UpdateProfileUserData("Updated Valid User", dateOfBirth, Gender.LAKI_LAKI);
+        User updatedUser = validUser;
+        updatedUser.setFullName(userData.getFullName());
+        updatedUser.setDateOfBirth(userData.getDateOfBirth());
+        updatedUser.setGender(userData.getGender());
+
+        Mockito.when(userService.updateProfile(userData)).thenReturn(updatedUser);
+        ResponseEntity<ResponseData<User>> result = userController.updateProfile(userData);
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertNotNull(result.getBody().getMessages());
+        assertEquals(messages, result.getBody().getMessages());
+        assertTrue(result.getBody().isStatus());
+        assertNotNull(result.getBody().getPayload());
+
+        Mockito.verify(userService, Mockito.times(1)).updateProfile(userData);
     }
 }

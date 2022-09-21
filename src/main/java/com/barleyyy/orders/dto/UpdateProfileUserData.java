@@ -21,6 +21,12 @@ public class UpdateProfileUserData {
     @Column(nullable = false)
     private Gender gender;
 
+    public UpdateProfileUserData(String fullName, Date dateOfBirth, Gender gender) {
+        this.fullName = fullName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+    }
+
     public String getFullName() {
         return fullName;
     }

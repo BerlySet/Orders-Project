@@ -165,10 +165,10 @@ class OrderControllerTest {
 
     @Test
     void update() {
-        messages.add("Add Order Success!");
+        messages.add("Update Order Success!");
 
         Mockito.when(orderService.store(order)).thenReturn(order);
-        ResponseEntity<ResponseData<Order>> result = orderController.addOrder(order);
+        ResponseEntity<ResponseData<Order>> result = orderController.update(order);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
